@@ -1,11 +1,11 @@
 import login from "../../src/controllers/login.controller.js";
-import { expect, jest } from "@jest/globals";
+import { expect, sinon } from "../chai.config.js";
 import * as LoginLogic from "../../src/logic/login.logic.js";
 import { HTTPError } from "../../src/helpers/error.helper.js";
 import loginMessages from "../../src/messages/login.messages.js";
 
 describe("Controller: Login", () => {
-	const loginLogicStub = jest.spyOn(LoginLogic, "default");
+	const { any } = sinon.match;
 
 	const defaultReq = {
 		body: {
@@ -14,10 +14,22 @@ describe("Controller: Login", () => {
 		},
 	};
 
-	const res = {
-		status: jest.fn().mockReturnThis(),
-		json: jest.fn(),
-	};
+	const mockResponse = () =>{
+		const res = {};
+		res.status = sinon.stub().returns(res);
+		res.json = sinon.stub().returns(res);
+		return res;
+	}
+
+	let loginLogicStub;
+
+	beforeEach(() => {
+		loginLogicStub = sinon.stub(LoginLogic, "default");
+	});
+
+	afterEach(() => {
+		loginLogicStub.restore();
+	});
 
 	it("[ERROR] Should throw an error when the email doesn't exists in the body", async () => {
 		const req = {
@@ -32,10 +44,12 @@ describe("Controller: Login", () => {
 			code: 400,
 		});
 
+		const res = mockResponse();
+
 		await login(req, res);
-		expect(res.status).toBeCalledWith(400);
-		expect(res.json).toBeCalledWith({ error: { ...httpError } });
-		expect(loginLogicStub).not.toBeCalled();
+		expect(res.status).to.be.calledWith(400);
+		expect(res.json).to.be.calledWith({ error: { ...httpError } });
+		expect(loginLogicStub).to.not.be.called;
 	});
 
 	it("[ERROR] Should throw an error when the password doesn't exists in the body", async () => {
@@ -51,10 +65,12 @@ describe("Controller: Login", () => {
 			code: 400,
 		});
 
+		const res = mockResponse();
+
 		await login(req, res);
-		expect(res.status).toBeCalledWith(400);
-		expect(res.json).toBeCalledWith({ error: { ...httpError } });
-		expect(loginLogicStub).not.toBeCalled();
+		expect(res.status).to.be.calledWith(400);
+		expect(res.json).to.be.calledWith({ error: { ...httpError } });
+		expect(loginLogicStub).to.not.be.called;
 	});
 
 	it("[ERROR] Should throw an error when the email format is invalid", async () => {
@@ -71,22 +87,25 @@ describe("Controller: Login", () => {
 			},
 		};
 
+		const res = mockResponse();
+
 		await login(req, res);
-		expect(res.status).toBeCalledWith(400);
-		expect(res.json).toBeCalledWith({ error: { ...httpError } });
-		expect(loginLogicStub).not.toBeCalled();
+		expect(res.status).to.be.calledWith(400);
+		expect(res.json).to.be.calledWith({ error: { ...httpError } });
+		expect(loginLogicStub).to.not.be.called;
 	});
 
 	it("[ERROR] Should throw an 500 error when LoginLogic throws an TypeError", async () => {
 		const error = new TypeError("some-error");
 
-		loginLogicStub.mockRejectedValue(error);
+		const res = mockResponse();
+
+		loginLogicStub.rejects(error);
 
 		await login(defaultReq, res);
-
-		expect(res.status).toBeCalledWith(500);
-		expect(res.json).toBeCalledWith({ error: error.toString() });
-		expect(loginLogicStub).toBeCalled();
+		expect(res.status).to.be.calledWith(500);
+		expect(res.json).to.be.calledWith({ error: error.toString() });
+		expect(loginLogicStub).to.be.called;
 	});
 
 	it("[ERROR] Should throw an 400 error when LoginLogic throws an HTTPError with 400 code", async () => {
@@ -96,25 +115,28 @@ describe("Controller: Login", () => {
 			code: 400,
 		});
 
-		loginLogicStub.mockRejectedValue(error);
+		const res = mockResponse();
+
+		loginLogicStub.rejects(error);
 
 		await login(defaultReq, res);
-
-		expect(res.status).toBeCalledWith(400);
-		expect(res.json).toBeCalledWith({ error: { ...error } });
-		expect(loginLogicStub).toBeCalled();
+		expect(res.status).to.be.calledWith(400);
+		expect(res.json).to.be.calledWith({ error: { ...error } });
+		expect(loginLogicStub).to.be.called;
 	});
 
 	it("[SUCCESS] Should return a token when LoginLogic return the token", async () => {
 		const token = "this-is-a-token";
 		const verified = true;
 
-		loginLogicStub.mockResolvedValue({ token, verified });
+		const res = mockResponse();
+
+		loginLogicStub.resolves({ token, verified });
 
 		await login(defaultReq, res);
-		expect(res.json).toBeCalledWith({ token, verified });
-		expect(res.status).toBeCalledWith(200);
-		expect(loginLogicStub).toBeCalledWith({
+		expect(res.status).to.be.calledWith(200);
+		expect(res.json).to.be.calledWith({ token, verified });
+		expect(loginLogicStub).to.be.calledWith({
 			email: defaultReq.body.email,
 			password: defaultReq.body.password,
 		});
