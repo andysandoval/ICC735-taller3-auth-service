@@ -19,7 +19,7 @@ export default {
 	HOST: process.env.HOST || "http://localhost",
 	PORT: process.env.PORT || 3001,
 	MONGO_URI:
-		process.env.MONGO_URI || "mongodb://localhost:27017/auth-service-local",
+		process.env.MONGO_URI || "mongodb://127.0.0.1:27017/auth-service-local",
 	EMAIL_SERVICE: {
 		BASE_URL: process.env.EMAIL_SERVICE_BASE_URL || "http://localhost:3002",
 		ENDPOINTS: {
