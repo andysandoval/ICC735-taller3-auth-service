@@ -5,8 +5,6 @@ import registerMessages from "../../src/messages/register.messages.js";
 import { HTTPError } from "../../src/helpers/error.helper.js";
 
 describe("Controller: Register", () => {
-	const { any } = sinon.match;
-
 	const mockResponse = () => {
 		const res = {};
 		res.status = sinon.stub().returns(res);
@@ -211,41 +209,6 @@ describe("Controller: Register", () => {
 		expect(res.json).to.be.calledWith({ error: { ...httpError } });
 		expect(registerLogicStub).to.not.be.called;
 	});
-
-	// it("[SUCCESS] Should return true when BusinessLogic.checkText return true", async () => {
-	// 	const req = {
-	// 		body: {
-	// 			type: "type",
-	// 			text: "text",
-	// 		},
-	// 	};
-
-	// 	const res = mockResponse();
-
-	// 	checkTextBusinessLogicStub.withArgs(req.body).returns(true);
-
-	// 	await checkText(req, res);
-	// 	expect(res.status).to.be.calledWith(200);
-	// 	expect(res.send).to.be.calledWith(true);
-	// 	expect(checkTextBusinessLogicStub).to.be.calledWith(req.body);
-	// });
-
-	// it("[SUCCESS] Should return false when BusinessLogic.checkText return false", async () => {
-	// 	const req = {
-	// 		body: {
-	// 			type: "type",
-	// 			text: "text",
-	// 		},
-	// 	};
-	// 	const res = mockResponse();
-
-	// 	checkTextBusinessLogicStub.withArgs(req.body).returns(false);
-
-	// 	await checkText(req, res);
-	// 	expect(res.send).to.be.calledWith(false);
-	// 	expect(res.status).to.be.calledWith(200);
-	// 	expect(checkTextBusinessLogicStub).to.be.calledWith(req.body);
-	// });
 
 	it("[ERROR] Should throw a 500 error when RegisterLogic throws a TypeError", async () => {
 		const error = new TypeError("some-error");

@@ -20,8 +20,8 @@ describe("verify", () => {
     findByIdStub.restore();
   });
 
-  it("should throw an HTTPError with code 404 if the user is not found", async () => {
-    const userId = "user123";
+  it("[ERROR] should throw an HTTPError with code 404 if the user is not found", async () => {
+    const userId = "user_id";
     const code = "tokenCode";
 
     findByIdStub.returns({
@@ -40,8 +40,8 @@ describe("verify", () => {
     }
   });
 
-  it("should throw an HTTPError with code 400 if the user is already verified", async () => {
-    const userId = "user123";
+  it("[ERROR] should throw an HTTPError with code 400 if the user is already verified", async () => {
+    const userId = "user_id";
     const code = "tokenCode";
     const foundUser = { verified: true };
 
@@ -61,8 +61,8 @@ describe("verify", () => {
     }
   });
 
-  it("should throw an HTTPError with code 404 if the user code is null or empty", async () => {
-    const userId = "user123";
+  it("[ERROR] should throw an HTTPError with code 404 if the user code is null or empty", async () => {
+    const userId = "user_id";
     const code = "tokenCode";
     const foundUser = { verified: false, code: null };
 
@@ -82,8 +82,8 @@ describe("verify", () => {
     }
   });
 
-  it("should throw an HTTPError with code 400 if the decoded code does not match the input code", async () => {
-    const userId = "user123";
+  it("[ERROR] should throw an HTTPError with code 400 if the decoded code does not match the input code", async () => {
+    const userId = "user_id";
     const code = "tokenCode";
     const foundUser = { verified: false, code: code };
 

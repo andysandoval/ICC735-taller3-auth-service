@@ -19,7 +19,7 @@ describe("Login Tests", () => {
       findOneStub.restore();
     });
 
-    it("should return a token and verified status when login is successful", async () => {
+    it("[SUCCES] should return a token and verified status when login is successful", async () => {
       const email = "email@email.com";
       const password = "password";
       const foundUser = {
@@ -44,7 +44,7 @@ describe("Login Tests", () => {
       expect(result).to.deep.equal({ token: token, verified: true });
     });
 
-    it("should throw an error when user is blocked", async () => {
+    it("[ERROR] should throw an error when user is blocked", async () => {
       const email = "email@email.com";
       const password = "password";
       const blockedUser = {
@@ -75,7 +75,7 @@ describe("Login Tests", () => {
       }
     });
 
-    it("should throw an error for invalid credentials", async () => {
+    it("[ERROR] should throw an error for invalid credentials", async () => {
       const email = "email@email.com";
       const password = "password";
 
@@ -93,7 +93,7 @@ describe("Login Tests", () => {
   });
 
   describe("checkIfUserBlocked", () => {
-    it("should throw an HTTPError with code 403 when user is blocked", () => {
+    it("[ERROR] should throw an HTTPError with code 403 when user is blocked", () => {
       const blocked = true;
       const loginMessagesMock = {
         blocked: {

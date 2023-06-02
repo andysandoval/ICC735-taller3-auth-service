@@ -6,8 +6,6 @@ import {
 } from "../../src/helpers/jwt.helper.js";
 
 describe("JWT Token Tests", () => {
-    const { any } = sinon.match;
-
     const SECRET = "secret";
     const DEFAULT_EXPIRES = "1d";
   

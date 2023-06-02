@@ -4,78 +4,78 @@ import UserModel from "../../src/models/user.model.js";
 import { connectDB } from "../../src/config/mongo.js";
 
 describe("UserModel", () => {
-   describe("pre save", () => {
+  describe("pre save", () => {
     const userModelStub = jest.spyOn(UserModel, "create");
 
-	beforeAll(async () => {
-		await connectDB();
-	});
-
-	beforeEach(async () => {
-		await UserModel.deleteMany({});
-	});
-
-    it("should hash the password if it has been modified", (done) => {
-        const user = new UserModel({
-          name: "Andy Sandoval",
-          email: "andy@gmail.com",
-          password: "AndySandoval#",
-          rut: "20365362k",
-        });
-
-        userModelStub.mockReturnValue();
-  
-        const isModifiedStub = sinon.stub(user, "isModified").returns(true);
-        const genSaltStub = sinon.stub(bcrypt, "genSalt");
-        const hashStub = sinon.stub(bcrypt, "hash");
-
-        genSaltStub.callsFake((rounds, callback) => {
-          callback(null, "salt");
-        });
-  
-        hashStub.callsFake((password, salt, callback) => {
-          callback(null, "hashedPassword");
-        });
-  
-        user.save((err) => {
-          expect(err).to.be.null;
-          expect(user.password).to.equal("hashedPassword");
-          expect(isModifiedStub.called).to.be.true;
-          expect(genSaltStub.called).to.be.true;
-          expect(hashStub.called).to.be.true;
-  
-          isModifiedStub.restore();
-          genSaltStub.restore();
-          hashStub.restore();
-  
-          done();
-        });
-      });
+    beforeAll(async () => {
+      await connectDB();
     });
 
-  describe("comparePassword", () => {
-    it("should return true if the candidate password matches the hashed password", async () => {
+    beforeEach(async () => {
+      await UserModel.deleteMany({});
+    });
+
+    it("[SUCCES] should hash the password if it has been modified", (done) => {
       const user = new UserModel({
-        name: "John Doe",
-        email: "john@example.com",
-        password: "password123",
-        rut: "ABCD1234",
+        name: "Andy Sandoval",
+        email: "andy@gmail.com",
+        password: "AndySandoval#",
+        rut: "20365362k",
+      });
+
+      userModelStub.mockReturnValue();
+
+      const isModifiedStub = sinon.stub(user, "isModified").returns(true);
+      const genSaltStub = sinon.stub(bcrypt, "genSalt");
+      const hashStub = sinon.stub(bcrypt, "hash");
+
+      genSaltStub.callsFake((rounds, callback) => {
+        callback(null, "salt");
+      });
+
+      hashStub.callsFake((password, salt, callback) => {
+        callback(null, "hashedPassword");
+      });
+
+      user.save((err) => {
+        expect(err).to.be.null;
+        expect(user.password).to.equal("hashedPassword");
+        expect(isModifiedStub.called).to.be.true;
+        expect(genSaltStub.called).to.be.true;
+        expect(hashStub.called).to.be.true;
+
+        isModifiedStub.restore();
+        genSaltStub.restore();
+        hashStub.restore();
+
+        done();
+      });
+    });
+  });
+
+  describe("comparePassword", () => {
+    it("[SUCCES] should return true if the candidate password matches the hashed password", async () => {
+      const user = new UserModel({
+        name: "Andy Sandoval",
+        email: "andy@gmail.com",
+        password: "AndySandoval#",
+        rut: "20365362k",
       });
 
       sinon.stub(bcrypt, "compareSync").returns(true);
 
-      const result = await user.comparePassword("password123");
+      const result = await user.comparePassword("AndySandoval#");
 
       expect(result).to.be.true;
       bcrypt.compareSync.restore();
     });
 
-    it("should return false if the candidate password does not match the hashed password", async () => {
+    it("[ERROR] should return false if the candidate password does not match the hashed password", async () => {
       const user = new UserModel({
-        name: "John Doe",
-        email: "john@example.com",
-        password: "password123",
-        rut: "ABCD1234",
+        name: "Andy Sandoval",
+        email: "andy@gmail.com",
+        password: "AndySandoval#",
+        rut: "20365362k",
       });
 
       sinon.stub(bcrypt, "compareSync").returns(false);
@@ -88,12 +88,12 @@ describe("UserModel", () => {
   });
 
   describe("setVerified", () => {
-    it("should set user.verified to true and remove user.code", (done) => {
+    it("[SUCCES] should set user.verified to true and remove user.code", (done) => {
       const user = new UserModel({
-        name: "John Doe",
-        email: "john@example.com",
-        password: "password123",
-        rut: "ABCD1234",
+        name: "Andy Sandoval",
+        email: "andy@gmail.com",
+        password: "AndySandoval#",
+        rut: "20365362k",
         verified: false,
         code: "verificationCode",
       });
